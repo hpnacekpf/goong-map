@@ -1,15 +1,12 @@
-<form
-  autocomplete="off"
-  [formGroup]="locationForm"
-  style="margin: 10px"
-  (ngSubmit)="addMarker()"
->
+<form autocomplete="off" [formGroup]="locationForm" #locationForm1 style="margin: 10px" (ngSubmit)="addMarker()">
   <div class="form-group" style="margin: 10px">
     <label for="=lng">Lng : </label>
-    <input name="lng" ngModel type="text" class="form-control" style="margin-right: 10px" [formControl]="lng">
+    <input name="lng" ngModel type="number" class="form-control" style="margin-right: 10px" [formControl]="lng"
+      required />
 
     <label for="lat">Lat : </label>
-    <input  name="lat" ngModel type="text" class="form-control" style="margin-right: 10px" [formControl]="lat">
+    <input name="lat" ngModel type="number" class="form-control" style="margin-right: 10px" [formControl]="lat"
+      required>
     <button type="submit" class="btn btn-primary mr-1">Add marker</button>
   </div>
 </form>

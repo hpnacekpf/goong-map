@@ -1,1 +1,3 @@
-<app-map></app-map>
+<app-map [locationCenter]="locationCenter" (getLocationMarker)="locationMarker($event)" [key]="key"></app-map>
+<br />
+<!-- <app-map [locationCenter]="locationCenter2" (getLocationMarker)="locationMarker($event)" [key]="key2"></app-map> -->

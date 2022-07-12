@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 declare const require: any;
 const goongClient = require('@goongmaps/goong-sdk');
 const goongDirections = require('@goongmaps/goong-sdk/services/directions');
@@ -19,19 +19,23 @@ var polyline = require('@mapbox/polyline');
   styleUrls: ['./map.component.css'],
 })
 export class MapComponent implements OnInit {
+  @Input() locationCenter!: any[];
+  @Input() key!: any;
+  @Output() getLocationMarker = new EventEmitter();
+
   locationForm!: FormGroup;
   lng!: FormControl;
   lat!: FormControl;
   public goongMap: any;
   marker: any;
   listMaker = [
-    [105.89991, 21.028],
-    [105.83911, 21.028],
-    [105.82911, 21.021],
+    // [105.89991, 21.028],
+    // [105.83911, 21.028],
+    // [105.82911, 21.021],
   ];
 
   constructor(builder: FormBuilder) {
-    this.lng = new FormControl('', []);
+    this.lng = new FormControl('', [Validators.required]);
     this.lat = new FormControl('', []);
     this.locationForm = builder.group({
       lng: this.lng,
@@ -45,9 +49,9 @@ export class MapComponent implements OnInit {
     console.log(directionService);
     this.goongMap = new goongjs.Map({
       container: 'map',
-      accessToken: 'yzMlW7WxOTIbgIA62NbzpqbIQDqMz1hkKxA4bMF0',
+      accessToken: this.key,
       style: 'https://tiles.goong.io/assets/goong_map_web.json', // stylesheet location
-      center: [105.83991, 21.028], // starting position [lng, lat]
+      center: this.locationCenter, // starting position [lng, lat]
       zoom: 10, // starting zoom
       baseApiUrl: 'https://api.goong.io',
       hash: true,
@@ -66,6 +70,8 @@ export class MapComponent implements OnInit {
     });
     var marker = new goongjs.Marker();
     marker.remove(this.goongMap);
+    marker.setLngLat(this.locationCenter)
+    marker.addTo(this.goongMap);
     this.goongMap.on('click', (e: any) => {
       console.log(e);
       var popup = new goongjs.Popup({ offset: 25 }).setText(
@@ -247,5 +253,6 @@ export class MapComponent implements OnInit {
       zoom: 12,
       essential: true,
     });
+    this.getLocationMarker.emit(lngLat)
   }
 }
