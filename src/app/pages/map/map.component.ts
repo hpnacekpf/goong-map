@@ -83,6 +83,7 @@ export class MapComponent implements OnInit {
       // new goongjs.Marker()
       marker.setLngLat([e.lngLat.lng, e.lngLat.lat]);
       marker.addTo(this.goongMap);
+      this.getLocationMarker.emit([e.lngLat.lng, e.lngLat.lat])
       // .setPopup(popup)
       // this.goongMap.flyTo({
       //   center: [e.lngLat.lng, e.lngLat.lat],
