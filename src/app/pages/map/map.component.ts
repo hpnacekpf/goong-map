@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 declare const require: any;
 const goongClient = require('@goongmaps/goong-sdk');
 const goongDirections = require('@goongmaps/goong-sdk/services/directions');
@@ -18,6 +19,9 @@ var polyline = require('@mapbox/polyline');
   styleUrls: ['./map.component.css'],
 })
 export class MapComponent implements OnInit {
+  locationForm!: FormGroup;
+  lng!: FormControl;
+  lat!: FormControl;
   public goongMap: any;
   marker: any;
   listMaker = [
@@ -26,8 +30,15 @@ export class MapComponent implements OnInit {
     [105.82911, 21.021],
   ];
 
-  constructor() {
+  constructor(builder: FormBuilder) {
+    this.lng = new FormControl('', []);
+    this.lat = new FormControl('', []);
+    this.locationForm = builder.group({
+      lng: this.lng,
+      lat: this.lat,
+    });
     console.log(goongjs);
+    console.log(this.locationForm);
   }
 
   ngOnInit(): void {
@@ -39,23 +50,42 @@ export class MapComponent implements OnInit {
       center: [105.83991, 21.028], // starting position [lng, lat]
       zoom: 10, // starting zoom
       baseApiUrl: 'https://api.goong.io',
+      hash: true,
+      attributionControl: true,
     });
     console.log(this.goongMap);
     this.listMaker.map((item: any) => {
       new goongjs.Marker({ draggable: true })
         .setLngLat(item)
         .addTo(this.goongMap);
+      this.goongMap.flyTo({
+        center: item,
+        zoom: 10,
+        essential: true, // this animation is considered essential with respect to prefers-reduced-motion
+      });
     });
+    var marker = new goongjs.Marker();
+    marker.remove(this.goongMap);
     this.goongMap.on('click', (e: any) => {
       console.log(e);
-      // var popup = new goongjs.Popup({ offset: 25 }).setText(
-      //   'The President Ho Chi Minh Mausoleum is a mausoleum which serves as the resting place of Vietnamese Revolutionary leader & President Ho Chi Minh in Hanoi, Vietnam'
-      //   );
-      new goongjs.Marker().setLngLat([e.lngLat.lng, e.lngLat.lat]);
+      var popup = new goongjs.Popup({ offset: 25 }).setText(
+        `lng: ${e.lngLat.lng}, lat: ${e.lngLat.lat}`
+      );
+      // var marker = new goongjs.Marker();
+      // marker.remove()
+      // marker =
+      // new goongjs.Marker()
+      marker.setLngLat([e.lngLat.lng, e.lngLat.lat]);
+      marker.addTo(this.goongMap);
       // .setPopup(popup)
-      // .addTo(this.goongMap);
+      // this.goongMap.flyTo({
+      //   center: [e.lngLat.lng, e.lngLat.lat],
+      //   zoom: 12,
+      //   essential: true, // this animation is considered essential with respect to prefers-reduced-motion
+      // });
     });
-    this.goongMap.addControl(new goongjs.FullscreenControl());
+    this.goongMap.addControl(new goongjs.FullscreenControl(), 'top-left');
+    this.goongMap.addControl(new goongjs.NavigationControl(), 'top-left');
     this.goongMap.addControl(
       new GoongGeocoder({
         accessToken: '4JzlYLJWCeVcj489y43pQJcwqBlS4YjWe8f5SK50',
@@ -192,6 +222,30 @@ export class MapComponent implements OnInit {
       this.goongMap.on('mouseleave', 'places', () => {
         this.goongMap.getCanvas().style.cursor = '';
       });
+    });
+    // var bbox = [
+    //   [105.29991, 21.528],
+    //   [105.89999, 21.198],
+    // ];
+    // var newCameraTransform = this.goongMap.cameraForBounds(bbox, {
+    //   padding: { top: 10, bottom: 25, left: 15, right: 5 },
+    // });
+  }
+
+  addMarker() {
+    console.log([
+      this.locationForm.value.lng * 1,
+      this.locationForm.value.lat * 1,
+    ]);
+    const lngLat = [
+      this.locationForm.value.lng * 1,
+      this.locationForm.value.lat * 1,
+    ];
+    new goongjs.Marker().setLngLat(lngLat).addTo(this.goongMap);
+    this.goongMap.flyTo({
+      center: lngLat,
+      zoom: 12,
+      essential: true,
     });
   }
 }

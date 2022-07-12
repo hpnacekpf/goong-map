@@ -1,1 +1,16 @@
+<form
+  autocomplete="off"
+  [formGroup]="locationForm"
+  style="margin: 10px"
+  (ngSubmit)="addMarker()"
+>
+  <div class="form-group" style="margin: 10px">
+    <label for="=lng">Lng : </label>
+    <input name="lng" ngModel type="text" class="form-control" style="margin-right: 10px" [formControl]="lng">
+
+    <label for="lat">Lat : </label>
+    <input  name="lat" ngModel type="text" class="form-control" style="margin-right: 10px" [formControl]="lat">
+    <button type="submit" class="btn btn-primary mr-1">Add marker</button>
+  </div>
+</form>
 <div #mapRef id="map" style="height: 700px"></div>
