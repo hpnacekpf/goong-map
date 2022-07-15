@@ -25,7 +25,6 @@ export class AppComponent {
   // markerTitle = "title"
   // markerPosition2 = [105.82911, 21.09521]
   // markerTitle2 = "title2"
-  // positionClick!: any[];
   center2 = [105.83911, 21.028];
   key2 = 'bxaNaBDC2vp7dAD41vPH5MZ44bItOaSCp3djnBVC';
   zoom2 = 10;
@@ -33,6 +32,5 @@ export class AppComponent {
   mapClick(value: any) {
     console.log(value);
     this.markerPositions.push(value);
-    // this.positionClick = value;
   }
 }

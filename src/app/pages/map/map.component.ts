@@ -63,7 +63,7 @@ export class MapComponent implements OnInit {
       // trackResize: false, //bản đồ sẽ tự động thay đổi kích thước khi cửa sổ trình duyệt thay đổi kích thước
     });
     console.log(this.goongMap);
-    const marker = new goongjs.Marker({scale: 0.8});
+    const marker = new goongjs.Marker({ scale: 0.8 });
     // marker.remove(this.goongMap);
     // marker.setLngLat(this._center);
     // marker.addTo(this.goongMap);
@@ -81,16 +81,5 @@ export class MapComponent implements OnInit {
         goongjs: goongjs,
       })
     );
-
-    // this.listMarker.map((item: any) => {
-    //   new goongjs.Marker({ draggable: true })
-    //     .setLngLat(item)
-    //     .addTo(this.goongMap);
-    //   // this.goongMap.flyTo({
-    //   //   center: item,
-    //   //   zoom: 10,
-    //   //   essential: true, // this animation is considered essential with respect to prefers-reduced-motion
-    //   // });
-    // });
   }
 }
