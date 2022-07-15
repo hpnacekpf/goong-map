@@ -25,34 +25,48 @@ var polyline = require('@mapbox/polyline');
   styleUrls: ['./map.component.css'],
 })
 export class MapComponent implements OnInit {
-  @Input() center!: any[];
-  @Input() key!: any;
-  @Input() zoom!: number;
+  @Input()
+  set center(center: any[]) {
+    this._center = center;
+  }
+  private _center!: any[];
+
+  @Input()
+  set key(key: string) {
+    this._key = key;
+  }
+  private _key!: string;
+
+  @Input()
+  set zoom(zoom: number) {
+    this._zoom = zoom;
+  }
+  private _zoom!: number;
+
   @Input() listMarker!: any[];
   @Output() mapClick = new EventEmitter();
   public goongMap: any;
 
   constructor(private readonly mapRef: ElementRef) {}
-  ngAfterViewInit(): void {
-  }
+  ngAfterViewInit(): void {}
 
   ngOnInit(): void {
     this.goongMap = new goongjs.Map({
       container: this.mapRef.nativeElement.querySelector('.map'),
-      accessToken: this.key,
+      accessToken: this._key,
       style: 'https://tiles.goong.io/assets/goong_map_web.json', // stylesheet location
-      center: this.center, // starting position [lng, lat]
-      zoom: this.zoom ? this.zoom : 10, // starting zoom
+      center: this._center, // starting position [lng, lat]
+      zoom: this._zoom ? this._zoom : 10, // starting zoom
       baseApiUrl: 'https://api.goong.io',
       // hash: true, // vị trí của bản đồ (thu phóng, vĩ độ trung tâm, kinh độ trung tâm, điểm mang và cao độ) sẽ được đồng bộ hóa với phân đoạn băm của URL của trang.
       // attributionControl: true, // AttributionControl sẽ được thêm vào bản đồ.
       // trackResize: false, //bản đồ sẽ tự động thay đổi kích thước khi cửa sổ trình duyệt thay đổi kích thước
     });
     console.log(this.goongMap);
-    const marker = new goongjs.Marker();
-    marker.remove(this.goongMap);
-    marker.setLngLat(this.center);
-    marker.addTo(this.goongMap);
+    const marker = new goongjs.Marker({scale: 0.8});
+    // marker.remove(this.goongMap);
+    // marker.setLngLat(this._center);
+    // marker.addTo(this.goongMap);
     this.goongMap.on('click', (e: any) => {
       marker.setLngLat([e.lngLat.lng, e.lngLat.lat]);
       marker.addTo(this.goongMap);

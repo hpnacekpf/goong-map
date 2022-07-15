@@ -20,17 +20,19 @@ export class AppComponent {
     [105.83911, 21.0112328],
     [105.82911, 21.0211241],
   ];
+  markerOptions = { draggable: true };
   // markerPosition = [105.82911, 21.021]
-  markerTitle = "title"
+  // markerTitle = "title"
   // markerPosition2 = [105.82911, 21.09521]
   // markerTitle2 = "title2"
   // positionClick!: any[];
-  // center2 = [105.83911, 21.028];
-  // key2 = 'bxaNaBDC2vp7dAD41vPH5MZ44bItOaSCp3djnBVC';
-  // zoom2 = 12;
+  center2 = [105.83911, 21.028];
+  key2 = 'bxaNaBDC2vp7dAD41vPH5MZ44bItOaSCp3djnBVC';
+  zoom2 = 10;
 
   mapClick(value: any) {
     console.log(value);
+    this.markerPositions.push(value);
     // this.positionClick = value;
   }
 }
