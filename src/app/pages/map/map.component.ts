@@ -1,17 +1,12 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
 declare const require: any;
 const goongClient = require('@goongmaps/goong-sdk');
 const goongDirections = require('@goongmaps/goong-sdk/services/directions');
@@ -30,48 +25,40 @@ var polyline = require('@mapbox/polyline');
   styleUrls: ['./map.component.css'],
 })
 export class MapComponent implements OnInit {
-  @Input() locationCenter!: any[];
+  @Input() center!: any[];
   @Input() key!: any;
-  @Output() getLocationMarker = new EventEmitter();
-
-  locationForm!: FormGroup;
-  lng!: FormControl;
-  lat!: FormControl;
+  @Input() zoom!: number;
+  @Input() listMarker!: any[];
+  @Output() mapClick = new EventEmitter();
   public goongMap: any;
-  marker: any;
 
-  constructor(builder: FormBuilder) {
-    this.lng = new FormControl('', [Validators.required]);
-    this.lat = new FormControl('', []);
-    this.locationForm = builder.group({
-      lng: this.lng,
-      lat: this.lat,
-    });
-    console.log(goongjs);
-    console.log(this.locationForm);
+  constructor(private readonly mapRef: ElementRef) {}
+  ngAfterViewInit(): void {
   }
 
   ngOnInit(): void {
-    console.log(directionService);
     this.goongMap = new goongjs.Map({
-      container: 'map',
+      container: this.mapRef.nativeElement.querySelector('.map'),
       accessToken: this.key,
       style: 'https://tiles.goong.io/assets/goong_map_web.json', // stylesheet location
-      center: this.locationCenter, // starting position [lng, lat]
-      zoom: 10, // starting zoom
+      center: this.center, // starting position [lng, lat]
+      zoom: this.zoom ? this.zoom : 10, // starting zoom
       baseApiUrl: 'https://api.goong.io',
-      hash: true,
-      attributionControl: true,
+      // hash: true, // vị trí của bản đồ (thu phóng, vĩ độ trung tâm, kinh độ trung tâm, điểm mang và cao độ) sẽ được đồng bộ hóa với phân đoạn băm của URL của trang.
+      // attributionControl: true, // AttributionControl sẽ được thêm vào bản đồ.
+      // trackResize: false, //bản đồ sẽ tự động thay đổi kích thước khi cửa sổ trình duyệt thay đổi kích thước
     });
-    var marker = new goongjs.Marker();
+    console.log(this.goongMap);
+    const marker = new goongjs.Marker();
     marker.remove(this.goongMap);
-    marker.setLngLat(this.locationCenter);
+    marker.setLngLat(this.center);
     marker.addTo(this.goongMap);
     this.goongMap.on('click', (e: any) => {
       marker.setLngLat([e.lngLat.lng, e.lngLat.lat]);
       marker.addTo(this.goongMap);
-      this.getLocationMarker.emit([e.lngLat.lng, e.lngLat.lat]);
+      this.mapClick.emit([e.lngLat.lng, e.lngLat.lat]);
     });
+
     this.goongMap.addControl(new goongjs.FullscreenControl(), 'top-left');
     this.goongMap.addControl(new goongjs.NavigationControl(), 'top-left');
     this.goongMap.addControl(
@@ -80,19 +67,16 @@ export class MapComponent implements OnInit {
         goongjs: goongjs,
       })
     );
-  }
 
-  addMarker() {
-    const lngLat = [
-      this.locationForm.value.lng * 1,
-      this.locationForm.value.lat * 1,
-    ];
-    new goongjs.Marker().setLngLat(lngLat).addTo(this.goongMap);
-    this.goongMap.flyTo({
-      center: lngLat,
-      zoom: 12,
-      essential: true,
-    });
-    this.getLocationMarker.emit(lngLat);
+    // this.listMarker.map((item: any) => {
+    //   new goongjs.Marker({ draggable: true })
+    //     .setLngLat(item)
+    //     .addTo(this.goongMap);
+    //   // this.goongMap.flyTo({
+    //   //   center: item,
+    //   //   zoom: 10,
+    //   //   essential: true, // this animation is considered essential with respect to prefers-reduced-motion
+    //   // });
+    // });
   }
 }

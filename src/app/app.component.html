@@ -1,3 +1,6 @@
-<app-map [locationCenter]="locationCenter" (getLocationMarker)="locationMarker($event)" [key]="key"></app-map>
-<br />
-<!-- <app-map [locationCenter]="locationCenter2" (getLocationMarker)="locationMarker($event)" [key]="key2"></app-map> -->
+<app-map [center]="center" (mapClick)="mapClick($event)" [key]="key" [zoom]="zoom"
+  [listMarker]="listMarker">
+  <app-map-marker [markerPosition]="markerPosition" [markerTitle]="markerTitle" *ngFor="let markerPosition of markerPositions"></app-map-marker>
+  <!-- <app-map-marker [markerPosition]="markerPosition2" [markerTitle]="markerTitle2"></app-map-marker> -->
+</app-map>
+<!-- <app-map [center]="center2" (mapClick)="mapClick($event)" [key]="key2" [idHtml]="idHtml2" [zoom]="zoom2"></app-map> -->

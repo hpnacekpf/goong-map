@@ -1,0 +1,5 @@
+.mapboxgl-canvas {
+  display: block;
+  width: 50% !important;
+  height: 0px !important;
+}
